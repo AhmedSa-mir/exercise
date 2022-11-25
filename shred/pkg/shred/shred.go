@@ -1,11 +1,11 @@
 package shred
 
 import (
-	"log"
-	"os"
-	"io/fs"
-	"math"
 	"fmt"
+	"io/fs"
+	"log"
+	"math"
+	"os"
 
 	"example/pkg/fileutils"
 )
@@ -20,15 +20,15 @@ type shredConfig struct {
 // ModeCharDevice, ModeIrregular.
 // Shred path paramater should be a valid path. A valid path must not contain a '.' or '..'
 // or the empty string or start/end with a slash.
-func Shred(path string) error { 
+func Shred(path string) error {
 	ok := fs.ValidPath(path)
 	if !ok {
 		return fmt.Errorf("error: invalid path: %s. Path must not contain a '.' or '..' or the empty string or start/end with a slash.", path)
 	}
 
 	var invalidModes fs.FileMode = fs.ModeNamedPipe |
-					 fs.ModeSocket | fs.ModeDevice | fs.ModeCharDevice |
-					 fs.ModeIrregular
+		fs.ModeSocket | fs.ModeDevice | fs.ModeCharDevice |
+		fs.ModeIrregular
 	invalid, err := fileutils.CheckFileType(path, invalidModes)
 	if err != nil {
 		return fmt.Errorf("file error: %s", err)
@@ -41,13 +41,13 @@ func Shred(path string) error {
 	if err != nil {
 		log.Fatalf("error opening file: %s", err)
 	}
-    defer func() {
-        if err := f.Close(); err != nil {
-            log.Fatalf("error closing file: %s", err)
-        }
-    }()
+	defer func() {
+		if err := f.Close(); err != nil {
+			log.Fatalf("error closing file: %s", err)
+		}
+	}()
 
-	cfg := shredConfig {
+	cfg := shredConfig{
 		Iterations: 3,
 		BufMaxSize: math.MaxUint32,
 	}
@@ -56,7 +56,7 @@ func Shred(path string) error {
 		log.Printf("shred: iteration #%d", i+1)
 		var idx int64 = 0
 		var bufSize int64 = cfg.BufMaxSize
-		var chunksCount int64 = fileSize/cfg.BufMaxSize
+		var chunksCount int64 = fileSize / cfg.BufMaxSize
 		for i := int64(0); i <= chunksCount; i++ {
 			// last chunk (remaining bytes)
 			if i == int64(chunksCount) {
@@ -71,9 +71,9 @@ func Shred(path string) error {
 	}
 
 	err = os.Remove(path)
-    if err != nil {
+	if err != nil {
 		return fmt.Errorf("error deleting file: %s", err)
-    }
+	}
 
 	log.Printf("shred: success: %s has been shredded and deleted.", path)
 	return nil

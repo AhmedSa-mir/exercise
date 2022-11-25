@@ -1,18 +1,18 @@
 package fileutils
 
 import (
-	"os"
 	"crypto/rand"
 	"io/fs"
+	"os"
 )
 
-// CheckFileType checks whether the path file type matches the mode 
+// CheckFileType checks whether the path file type matches the mode
 func CheckFileType(path string, mode fs.FileMode) (bool, error) {
 	fileInfo, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		return false, err
 	}
-	if fileInfo.Mode() & mode == 0 {
+	if fileInfo.Mode()&mode == 0 {
 		return false, nil
 	}
 	return true, nil
@@ -26,7 +26,7 @@ func OpenFile(path string, flag int, mode fs.FileMode) (*os.File, int64, error) 
 	}
 
 	f, err := os.OpenFile(path, flag, mode)
-    if err != nil {
+	if err != nil {
 		return nil, 0, err
 	}
 
