@@ -15,7 +15,11 @@ type shredConfig struct {
 	BufMaxSize int64
 }
 
-// Shred overwrites a file at the given path 3 times and then deletes it.
+// Shred overwrites a file at the given path 3 times with random data and then deletes it.
+// Shred does not work on files with these types: ModeNamedPipe, ModeSocket, ModeDevice,
+// ModeCharDevice, ModeIrregular.
+// Shred path paramater should be a valid path. A valid path must not contain a '.' or '..'
+// or the empty string or start/end with a slash.
 func Shred(path string) error { 
 	ok := fs.ValidPath(path)
 	if !ok {
